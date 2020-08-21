@@ -87,6 +87,7 @@ def current_film_info(films_links_list):
             # print(f'Фильм добавлен: {Film.objects.filter(name=film_name)}')
         except Exception as e:
             pass
+            # TODO: обработать ошибку 'NoneType' object has no attribute 'text'
             # print('\n' + '#' * 20)
             # print(f'{link} - {e}')
             # print('#' * 20 + '\n')
