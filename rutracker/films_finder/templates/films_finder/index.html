@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+</head>
+
+<body>
+
+<nav class="navbar navbar-light fixed-top  bg-light">
+    <form class="form-inline">
+        <a href="{% url 'reset_bd' %}">
+            <button class="btn btn-outline-success" type="button">Обновить базу данных</button>
+        </a>
+        <span style="padding-left: 20px;">для обновления базы данных придется подождать около минуты!</span>
+    </form>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <h1 class="col-md-12" style="text-align: center;">Фильмы 2020 пизданутые с rutracker.org</h1><br>
+        {% for film in films %}
+        <div class="card col-md-4" style="">
+            <img src="{{ film.image }}" class="card-img-top" alt="тут должна быть картинка">
+            <div class="card-body">
+                <h5 class="card-title">{{ film.name }}</h5>
+                <p class="card-text">{{ film.description }}</p>
+                <a href="{{ film.url }}" class="btn btn-primary">Перейти к скачиванию</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="row">
+        <div class="col-md-12" style="margin: 20px 0;">
+            {% if prev_page_url %}
+                <a class="button button-primary" href="?page=1">
+                    <button class="btn btn-outline-success" type="button">1</button>
+                </a>
+                <a class="button button-primary" href="{{ prev_page_url }}">
+                    <button class="btn btn-outline-success" type="button">⟵</button>
+                </a>
+            {% endif %}
+                страница {{ current_page }} из {{ pages_count }}
+            {% if next_page_url %}
+                <a class="button button-primary" href="{{ next_page_url }}">
+                    <button class="btn btn-outline-success" type="button">⟶</button>
+                </a>
+                <a class="button button-primary" href="?page={{ pages_count }}">
+                    <button class="btn btn-outline-success" type="button">{{ pages_count }}</button>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+</body>
+</html>
