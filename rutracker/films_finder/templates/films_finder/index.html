@@ -8,23 +8,25 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
           integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
-    <title>Hello, world!</title>
+    <title>Здорова перцы!</title>
 </head>
 
 <body>
 
-<nav class="navbar navbar-light fixed-top  bg-light">
-    <form class="form-inline">
-        <a href="{% url 'reset_bd' %}">
-            <button class="btn btn-outline-success" type="button">Обновить базу данных</button>
-        </a>
-        <span style="padding-left: 20px;">для обновления базы данных придется подождать около минуты!</span>
-    </form>
-</nav>
 
 <div class="container">
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <form class="form-inline">
+            <a href="{% url 'reset_bd' %}">
+                <button class="btn btn-outline-success" type="button">Обновить базу данных</button>
+            </a>
+            <span style="padding-left: 20px; color: white;">для обновления базы данных придется подождать около минуты!</span>
+        </form>
+    </nav>
     <div class="row">
-        <h1 class="col-md-12" style="text-align: center;">Фильмы 2020 пизданутые с rutracker.org</h1><br>
+        <h1 class="col-md-12" style="text-align: center; margin-top: 50px;">
+            Фильмы 2020 пизданутые с rutracker.org
+        </h1><br>
         {% for film in films %}
         <div class="card col-md-4" style="">
             <img src="{{ film.image }}" class="card-img-top" alt="тут должна быть картинка">
