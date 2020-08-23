@@ -60,9 +60,10 @@ def get_films_links(url) -> list:
         # tr всех филмов со страницы -> list
         main_tr = table.find_all('tr', class_='hl-tr')[1:]
         for item in main_tr:
-            href = item.find('div', class_='torTopic').find('a', class_='torTopic').get('href')
-            href = 'https://rutracker.org/forum/' + str(href)
-            films_links_list.append(href)
+            if item.find('div', class_='torTopic').find('a', class_='torTopic'):
+                href = 'https://rutracker.org/forum/' + str(item.find('div', class_='torTopic').find('a', class_='torTopic').get('href'))
+                print(href)
+                films_links_list.append(href)
     return films_links_list
 
 
@@ -91,7 +92,7 @@ def current_film_info(films_links_list):
             Film.objects.create(name=film_name, description=description,
                                 url=link, image=image)
             print(f'Добавлен фильм: {Film.objects.get(name=film_name)}')
-        except Exception as e:
+        except:
             pass
             # TODO: обработать ошибку 'NoneType' object has no attribute 'text'
             # print('\n' + '#' * 20)
@@ -99,11 +100,8 @@ def current_film_info(films_links_list):
             # print('#' * 20 + '\n')
 
 
-def get_new_films(request):
+def get_new_films():
     '''функция наполненя БД фильмами'''
-    # удаляем все фильмы из БД
-    Film.objects.all().delete()
-
     # заново наполняем БД фильмами
     try:
         films_links_list = get_films_links(URL)
@@ -114,7 +112,9 @@ def get_new_films(request):
 
 def reset_bd_view(request):
     '''вьюшка для обновления фильмов в БД'''
-    get_new_films(request)
+    # удаляем все фильмы из БД
+    Film.objects.all().delete()
+    get_new_films()
     return redirect('index_view')
 
 
