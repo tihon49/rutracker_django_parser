@@ -24,39 +24,47 @@
         </form>
     </nav>
     <div class="row">
+        {% if films %}
         <h1 class="col-md-12" style="text-align: center; margin-top: 50px;">
             Фильмы 2020 с RuTracker.org
-        </h1><br>
+        </h1>
         {% for film in films %}
         <div class="card col-md-4">
             <img src="{{ film.image }}" class="card-img-top" alt="тут должна быть картинка">
             <div class="card-body" style="position: relative;">
                 <h5 class="card-title">{{ film.name }}</h5>
                 <p class="card-text" style="padding-bottom: 40px;">{{ film.description }}</p>
-                <a href="{{ film.url }}" class="btn btn-primary" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%)">Скачать</a>
+                <a href="{{ film.url }}" class="btn btn-primary"
+                   style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%)">Скачать</a>
             </div>
         </div>
         {% endfor %}
+        {% else %}
+        <div class="col-md-12" style="text-align: center; margin-top: 50px;">
+            <h4 style="margin-top: 20px;">В базе данных нет фильмов. Нажмите кнопку "Обновить базу данных" в верхнем
+                левом углу.</h4>
+        </div>
+        {% endif %}
     </div>
 
     <div class="row">
         <div class="col-md-12" style="margin: 20px 0;">
             {% if prev_page_url %}
-                <a class="button button-primary" href="?page=1">
-                    <button class="btn btn-outline-success" type="button">1</button>
-                </a>
-                <a class="button button-primary" href="{{ prev_page_url }}">
-                    <button class="btn btn-outline-success" type="button">⟵</button>
-                </a>
+            <a class="button button-primary" href="?page=1">
+                <button class="btn btn-outline-success" type="button">1</button>
+            </a>
+            <a class="button button-primary" href="{{ prev_page_url }}">
+                <button class="btn btn-outline-success" type="button">⟵</button>
+            </a>
             {% endif %}
-                страница {{ current_page }} из {{ pages_count }}
+            страница {{ current_page }} из {{ pages_count }}
             {% if next_page_url %}
-                <a class="button button-primary" href="{{ next_page_url }}">
-                    <button class="btn btn-outline-success" type="button">⟶</button>
-                </a>
-                <a class="button button-primary" href="?page={{ pages_count }}">
-                    <button class="btn btn-outline-success" type="button">{{ pages_count }}</button>
-                </a>
+            <a class="button button-primary" href="{{ next_page_url }}">
+                <button class="btn btn-outline-success" type="button">⟶</button>
+            </a>
+            <a class="button button-primary" href="?page={{ pages_count }}">
+                <button class="btn btn-outline-success" type="button">{{ pages_count }}</button>
+            </a>
             {% endif %}
         </div>
     </div>

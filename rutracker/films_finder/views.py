@@ -8,12 +8,14 @@ from bs4 import BeautifulSoup
 
 from films_finder.models import Film
 
+
+
 URL = 'https://rutracker.org/forum/viewforum.php?f=1950'
-# URL = 'https://rutracker.org/forum/viewforum.php?f=1950&start=50'
 
 
 def check_if_exist(name):
     '''функция проверки наличия фильма в бд'''
+    # TODO: пока не работает
     if Film.objects.get(name=name):
         return True
     else:
@@ -21,7 +23,7 @@ def check_if_exist(name):
 
 
 def clear_description(description):
-    '''функция получения описания фильма'''
+    '''функция получения описания фильма. встречается в фунции current_film_info()'''
     all_lines = [line for line in description.split('\n')]
     for index, line in enumerate(all_lines):
         if 'О фильме:' in line:
@@ -48,16 +50,19 @@ def get_soup(link):
 def get_films_links(url) -> list:
     '''функция получения всех ссылок на фильмы с главной страницы'''
     films_links_list = []
-    soup = get_soup(url)
-    main_div = soup.find('div', id='body_container')
-    table = main_div.find('table', class_='vf-table vf-tor forumline forum')
-    # tr всех филмов со страницы -> list
-    main_tr = table.find_all('tr', class_='hl-tr')[1:]
-    for item in main_tr:
-        href = item.find('div', class_='torTopic').find('a', class_='torTopic').get('href')
-        href = 'https://rutracker.org/forum/' + str(href)
-        films_links_list.append(href)
+    count = 0
+    for page_num in range(1):
+        soup = get_soup(url)
+        count += 50
+        main_div = soup.find('div', id='body_container')
+        table = main_div.find('table', class_='vf-table vf-tor forumline forum')
 
+        # tr всех филмов со страницы -> list
+        main_tr = table.find_all('tr', class_='hl-tr')[1:]
+        for item in main_tr:
+            href = item.find('div', class_='torTopic').find('a', class_='torTopic').get('href')
+            href = 'https://rutracker.org/forum/' + str(href)
+            films_links_list.append(href)
     return films_links_list
 
 
@@ -70,12 +75,13 @@ def current_film_info(films_links_list):
             main_div = soup.find('div', id='main_content_wrap')
             main_span = main_div.find('span', class_='post-font-serif1').text
 
+            # на сайте имеется как минимум три вида страниц описания фильма
+            # поэтому проверяем каждый из возможных вариантов
             if len(main_span.split('\n')) < 5:
                 main_span = main_div.find('span', class_='post-font-serif2').text
                 if len(main_span.split('\n')) < 5:
                    main_span = main_div.find('div', class_='post_body').text
 
-            # film_name = main_div.find('span', class_='post-b').text
             film_name = soup.find('h1', class_='maintitle').text.split('/')[0]
             image = main_div.find('var', class_='postImg postImgAligned img-right').get('title')
             description = clear_description(main_span)
@@ -84,7 +90,7 @@ def current_film_info(films_links_list):
             # создадим модель фильма
             Film.objects.create(name=film_name, description=description,
                                 url=link, image=image)
-            # print(f'Фильм добавлен: {Film.objects.filter(name=film_name)}')
+            print(f'Добавлен фильм: {Film.objects.get(name=film_name)}')
         except Exception as e:
             pass
             # TODO: обработать ошибку 'NoneType' object has no attribute 'text'
