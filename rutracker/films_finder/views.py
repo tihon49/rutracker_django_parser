@@ -52,7 +52,7 @@ def get_films_links(url) -> list:
     films_links_list = []
     count = 0
     for page_num in range(1):
-        soup = get_soup(url)
+        soup = get_soup(url + f'&start={count}')
         count += 50
         main_div = soup.find('div', id='body_container')
         table = main_div.find('table', class_='vf-table vf-tor forumline forum')
