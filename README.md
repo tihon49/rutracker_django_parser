@@ -52,4 +52,4 @@ python manage.py runserver
 
 
 Видосик:
-[![Watch the video](https://img.youtube.com/vi/ZBt6vmN3vJA/maxresdefault.jpg)](https://youtu.be/ZBt6vmN3vJA)
+[![Watch the video](https://img.youtube.com/vi/ZBt6vmN3vJA/0.jpg)](https://youtu.be/ZBt6vmN3vJA)
