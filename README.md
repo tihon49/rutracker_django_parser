@@ -47,9 +47,9 @@ python manage.py runserver
 После чего откройте браузер и перейдите по ссылке [127.0.0.1:8000](http://127.0.0.1:8000)
 <hr>
 Далее всё должно быть интуитивно понятно!
+Ниже можно посмотреть видеоинструкцию
 <hr>
 
 
 
-Видосик:
 [![Watch the video](https://img.youtube.com/vi/ZBt6vmN3vJA/0.jpg)](https://youtu.be/ZBt6vmN3vJA)
