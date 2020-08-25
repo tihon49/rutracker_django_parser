@@ -1,6 +1,3 @@
-import time
-from pprint import pprint
-
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 import requests

@@ -47,3 +47,9 @@ python manage.py runserver
 После чего откройте браузер и перейдите по ссылке [127.0.0.1:8000](http://127.0.0.1:8000)
 <hr>
 Далее всё должно быть интуитивно понятно!
+<hr>
+
+<div>
+    Видосик:
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/ZBt6vmN3vJA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
