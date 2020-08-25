@@ -8,3 +8,4 @@ class FilmAdmin(admin.ModelAdmin):
     list_display_links = ['name', 'id', 'url']
     # list_filter = ['name']
     search_fields = ['name', 'description']
+    ordering = ['id']

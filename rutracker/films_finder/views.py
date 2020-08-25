@@ -64,6 +64,8 @@ def get_films_links(url) -> list:
                 href = 'https://rutracker.org/forum/' + str(item.find('div', class_='torTopic').find('a', class_='torTopic').get('href'))
                 print(href)
                 films_links_list.append(href)
+            else:
+                print(f'Что-то не так с:\n{item}')
     return films_links_list
 
 
