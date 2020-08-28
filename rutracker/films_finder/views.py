@@ -38,7 +38,7 @@ def get_proxy():
                'user-agent': 'Mozilla/5.0(X11;Linux x86_64...)Geco/20100101 Firefox/60.0'}
     session = requests.session()
     response = session.get(url, headers=headers)
-    soup = bs(response.content, 'lxml')
+    soup = BeautifulSoup(response.content, 'lxml')
     main_div = soup.find('div', class_='table_block')
     for proxy in main_div.find_all('tr'):
         p = proxy.find('td').text
