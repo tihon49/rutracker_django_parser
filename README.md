@@ -38,7 +38,7 @@ python manage.py migrate
 подгружаем наполнение БД по умолчанию (это не обязательно), после чего в базе данных уже будет стартовый набор фильмов и
 админ панель с логином admin и паролем admin по адресу [127.0.0.1:8000/admin](http://127.0.0.1:8000/admin) :
 ```
-python manage.py loaddata data.txt
+python manage.py loaddata data.json
 ```
 запускаем сервер на локальном хосте:
 ```
