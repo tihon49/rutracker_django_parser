@@ -1,13 +1,64 @@
+import json
+import os
+
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 import requests
 from bs4 import BeautifulSoup
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from films_finder.models import Film
+from films_finder.serializers import FilmSerializer
+from rutracker.settings import BASE_DIR
 
+
+
+def check_proxy():
+    '''проверка прокси на валидность'''
+    with open('proxy.txt') as file:
+        proxy_base = ''.join(file.readlines()).strip().split('\n')
+    for proxy in proxy_base:
+        proxies = {'http': f'http://{proxy}:8080',
+                   'https': f'http://{proxy}:8080'}
+        link = 'https://rutracker.org/'
+        try:
+            response = requests.get(link, proxies=proxies, timeout=3)
+            print(f'GOOD: {proxy}')
+            with open('goods.txt', 'a') as f:
+                f.write(f'{proxy}:8080' + '\n')
+        except:
+            print('Прокси не валидный')
+
+
+def get_proxy():
+    '''получение списка прокси с сайта'''
+    url = 'https://hidemy.name/ru/proxy-list/?ports=8080&type=h#list'
+    headers = {'accept': '*/*',
+               'user-agent': 'Mozilla/5.0(X11;Linux x86_64...)Geco/20100101 Firefox/60.0'}
+    session = requests.session()
+    response = session.get(url, headers=headers)
+    soup = bs(response.content, 'lxml')
+    main_div = soup.find('div', class_='table_block')
+    for proxy in main_div.find_all('tr'):
+        p = proxy.find('td').text
+        with open('proxy.txt', 'a') as out:
+            out.write(p + '\n')
 
 
 URL = 'https://rutracker.org/forum/viewforum.php?f=1950'
+
+
+class FilmView(APIView):
+    '''API вьюшка со всеми фильмами'''
+    def get(self, request):
+        queryset = Film.objects.all()
+        serializer = FilmSerializer(queryset, many=True)
+
+        with open(os.path.join(BASE_DIR, 'dump_data.json'), 'w', encoding='utf-8') as file:
+            json.dump(serializer.data, file, indent=4, ensure_ascii=False)
+
+        return Response(serializer.data)
 
 
 def check_if_exist(name):
@@ -36,10 +87,14 @@ def clear_description(description):
 
 def get_soup(link):
     '''функция получения базовой информации со страницы'''
+    #TODO:подключить сюда выбор прокси из goods.txt
     headers = {'accept': '*/*',
                'user-agent': 'Mozilla/5.0(X11;Linux x86_64...)Geco/20100101 Firefox/60.0'}
     session = requests.session()
-    response = session.get(link, headers=headers)
+
+    proxies = {'http': 'http://177.36.128.162:8080',
+               'https': 'http://177.36.128.162:8080'}
+    response = session.get(link, headers=headers, proxies=proxies)
     soup = BeautifulSoup(response.content, 'lxml')
     return soup
 
@@ -113,6 +168,8 @@ def reset_bd_view(request):
     '''вьюшка для обновления фильмов в БД'''
     # удаляем все фильмы из БД
     Film.objects.all().delete()
+    # get_proxy()
+    # check_proxy()
     get_new_films()
     return redirect('index_view')
 
