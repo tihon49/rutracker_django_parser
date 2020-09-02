@@ -14,38 +14,6 @@ from rutracker.settings import BASE_DIR
 
 
 
-def check_proxy():
-    '''проверка прокси на валидность'''
-    with open('proxy.txt') as file:
-        proxy_base = ''.join(file.readlines()).strip().split('\n')
-    for proxy in proxy_base:
-        proxies = {'http': f'http://{proxy}:8080',
-                   'https': f'http://{proxy}:8080'}
-        link = 'https://rutracker.org/'
-        try:
-            response = requests.get(link, proxies=proxies, timeout=3)
-            print(f'GOOD: {proxy}')
-            with open('goods.txt', 'a') as f:
-                f.write(f'{proxy}:8080' + '\n')
-        except:
-            print('Прокси не валидный')
-
-
-def get_proxy():
-    '''получение списка прокси с сайта'''
-    url = 'https://hidemy.name/ru/proxy-list/?ports=8080&type=h#list'
-    headers = {'accept': '*/*',
-               'user-agent': 'Mozilla/5.0(X11;Linux x86_64...)Geco/20100101 Firefox/60.0'}
-    session = requests.session()
-    response = session.get(url, headers=headers)
-    soup = BeautifulSoup(response.content, 'lxml')
-    main_div = soup.find('div', class_='table_block')
-    for proxy in main_div.find_all('tr'):
-        p = proxy.find('td').text
-        with open('proxy.txt', 'a') as out:
-            out.write(p + '\n')
-
-
 URL = 'https://rutracker.org/forum/viewforum.php?f=1950'
 
 
@@ -85,18 +53,31 @@ def clear_description(description):
     return description
 
 
+def get_proxy_list_from_goods_file():
+    '''получаем список прокси из файла goods.txt'''
+    list_of_proxy = []
+    with open('goods.txt') as proxy_file:
+        lines = proxy_file.readlines()
+        for proxy in lines:
+            list_of_proxy.append(proxy)
+    return list_of_proxy
+
+
 def get_soup(link):
     '''функция получения базовой информации со страницы'''
-    #TODO:подключить сюда выбор прокси из goods.txt
     headers = {'accept': '*/*',
                'user-agent': 'Mozilla/5.0(X11;Linux x86_64...)Geco/20100101 Firefox/60.0'}
     session = requests.session()
-
-    proxies = {'http': 'http://177.36.128.162:8080',
-               'https': 'http://177.36.128.162:8080'}
-    response = session.get(link, headers=headers, proxies=proxies)
+    response = session.get(link, headers=headers)
     soup = BeautifulSoup(response.content, 'lxml')
     return soup
+
+    # for proxy in get_proxy_list_from_goods_file():
+    #     proxies = {'http': f'http://{proxy}',
+    #                'https': f'http://{proxy}'}
+    #     response = session.get(link, headers=headers, proxies=proxies)
+    #     soup = BeautifulSoup(response.content, 'lxml')
+    #     return soup
 
 
 def get_films_links(url) -> list:
@@ -140,11 +121,12 @@ def current_film_info(films_links_list):
             film_name = soup.find('h1', class_='maintitle').text.split('/')[0]
             image = main_div.find('var', class_='postImg postImgAligned img-right').get('title')
             description = clear_description(main_span)
+            download_link = f"https://rutracker.org/forum/dl.php?t={link.split('=')[1]}"
             print('\n')
 
             # создадим модель фильма
             Film.objects.create(name=film_name, description=description,
-                                url=link, image=image)
+                                url=download_link, image=image)
             print(f'Добавлен фильм: {Film.objects.get(name=film_name)}')
         except:
             pass
