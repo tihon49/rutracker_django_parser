@@ -20,6 +20,7 @@ URL = 'https://rutracker.org/forum/viewforum.php?f=1950'
 class FilmView(APIView):
     '''API вьюшка со всеми фильмами'''
     def get(self, request):
+        print('мы тут')
         queryset = Film.objects.all()
         serializer = FilmSerializer(queryset, many=True)
 
@@ -27,15 +28,6 @@ class FilmView(APIView):
             json.dump(serializer.data, file, indent=4, ensure_ascii=False)
 
         return Response(serializer.data)
-
-
-def check_if_exist(name):
-    '''функция проверки наличия фильма в бд'''
-    # TODO: пока не работает
-    if Film.objects.get(name=name):
-        return True
-    else:
-        return False
 
 
 def clear_description(description):
@@ -69,7 +61,10 @@ def get_soup(link):
                'user-agent': 'Mozilla/5.0(X11;Linux x86_64...)Geco/20100101 Firefox/60.0'}
     session = requests.session()
     response = session.get(link, headers=headers)
-    soup = BeautifulSoup(response.content, 'lxml')
+    try:
+        soup = BeautifulSoup(response.content, 'lxml')
+    except Exception as e:
+        print(e)
     return soup
 
     # for proxy in get_proxy_list_from_goods_file():
@@ -86,6 +81,7 @@ def get_films_links(url) -> list:
     count = 0
     for page_num in range(1):
         soup = get_soup(url + f'&start={count}')
+        print(soup)
         count += 50
         main_div = soup.find('div', id='body_container')
         table = main_div.find('table', class_='vf-table vf-tor forumline forum')
